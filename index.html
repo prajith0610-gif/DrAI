@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr.AI - Proudly Indian Smart Health Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <h1 class="title">🩺 Dr.<span class="ai-logo">A<span>I</span></span></h1>
+        <p class="tagline">Your Personal Health & Symptom Checker 🇮🇳</p>
+
+        <form method="post" class="form" id="symptomForm">
+            <input type="text" name="symptoms" placeholder="Enter symptoms separated by comma" required>
+            <input type="hidden" name="lat" id="lat">
+            <input type="hidden" name="lon" id="lon">
+            <select name="language" required>
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+            </select>
+            <button type="submit">Check Diagnosis</button>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            <h2>🧩 Possible Diagnoses:</h2>
+            <ul>
+                {% for r in result %}
+                <li>{{ r }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div id="map" style="height: 400px; margin-top: 20px;"></div>
+
+        {% if doctors %}
+        <div class="doctors">
+            <h2>👨‍⚕️ Nearby Doctors:</h2>
+            <ul>
+                {% for doc in doctors %}
+                <li>
+                    {{ doc.name }} - {{ doc.specialty }} - {{ doc.language }}
+                    <a href="https://meet.jit.si/{{ doc.name | replace(' ', '') }}" target="_blank">Video Call</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="ambulance">
+            <h2>🚑 Ambulances Nearby:</h2>
+            <ul>
+                {% for amb in ambulances %}
+                <li>{{ amb.id }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+    <footer>Made with ❤️ in India by <b>Dr.AI</b></footer>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="/static/script.js"></script>
+<script>
+    navigator.geolocation.getCurrentPosition(function(position){
+        document.getElementById('lat').value = position.coords.latitude;
+        document.getElementById('lon').value = position.coords.longitude;
+    });
+</script>
+</body>
+</html>
